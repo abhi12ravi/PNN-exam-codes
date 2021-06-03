@@ -7,7 +7,7 @@ def sequential_multiclass_perceptron_learning (N, augmented_matrix, eta, omega, 
   # eta is the learning rate given in the question
   # omega is an array containing all the output classes of the feature vectors
 
-  N_counter = 0 # counter to check for convergence
+  N_counter = 0 # counter which keeps track of cases where winner_class == omega[index]
 
   #Step 2. Initialise aj for each class
   at = np.zeros((number_of_classes, number_of_features))
@@ -15,7 +15,7 @@ def sequential_multiclass_perceptron_learning (N, augmented_matrix, eta, omega, 
   for i in range(0,15):
     print ('Iteration: ',i+1)
     # Step 3. Find values of g1, g2 and g3 and then select the arg max of g
-    index = i % 3
+    index = i % 5
 
     #Print updated a^t value
     print('a^t:')
@@ -24,6 +24,10 @@ def sequential_multiclass_perceptron_learning (N, augmented_matrix, eta, omega, 
     # Compute g value
     g = np.empty([number_of_classes])
     for i in range(len(g)):
+      print('Calculation of g values..........')
+      print('a^t is:',at[i])
+      print('Index is:', index)
+      print('Aug matrix is:', augmented_matrix[:,index] )
       g[i] = at[i] @ augmented_matrix[:,index]
 
 
@@ -68,8 +72,10 @@ def sequential_multiclass_perceptron_learning (N, augmented_matrix, eta, omega, 
       N_counter =0
     else:
       print ('No update is performed!')
-      N_counter +=1
-      if(N_counter == N +2):
+      N_counter +=1 #Increment convergence counter which keeps track of cases where winner_class == omega[index]
+      if(N_counter == N): ## check for convergence
+        print('Value of N = ', N)
+        print('Value of N_counter = ', N_counter)
         print('Learning has converged, so stopping...')
         print ('Final values of a^t after update....')
         print('at')
@@ -82,9 +88,12 @@ def sequential_multiclass_perceptron_learning (N, augmented_matrix, eta, omega, 
 
 if __name__ == "__main__":
     #Set input variables for the sequential_multiclass_perceptron_learning function
-    N = 5
+    N = 5 # N refers to the number of exemplars in the input dataset
     eta = 1
-    augmented_matrix = np.array([[1,1,1,1,1],[1,2,0,-1,-1],[1,0,2,1,-1]]) # Input matrix from the question
+    input_array = np.array([[ 1,  1,  1,  1],
+                           [ 2,  0, -1, -1],
+                           [ 0,  2,  1, -1]]) # Input matrix from the question
+    augmented_matrix = np.insert(input_array,0,1,axis=1)
     omega = np.array([1,1,2,2,3]) # Class labels from the question 
     number_of_classes = 3
     number_of_features = 3
